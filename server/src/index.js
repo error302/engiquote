@@ -15,6 +15,12 @@ import invoicesRoutes from './routes/invoices.js';
 import tasksRoutes from './routes/tasks.js';
 import attachmentRoutes from './routes/attachments.js';
 import paymentRoutes from './routes/payments.js';
+import integrationRoutes from './routes/integrations.js';
+import marketplaceRoutes from './routes/marketplace.js';
+import recurringRoutes from './routes/recurring.js';
+import approvalRoutes from './routes/approvals.js';
+import auditRoutes from './routes/audit.js';
+import companyRoutes from './routes/companies.js';
 
 dotenv.config();
 
@@ -38,6 +44,12 @@ app.use('/api/invoices', invoicesRoutes);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/attachments', attachmentRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/integrations', integrationRoutes);
+app.use('/api/marketplace', marketplaceRoutes);
+app.use('/api/recurring', recurringRoutes);
+app.use('/api/approvals', approvalRoutes);
+app.use('/api/audit', auditRoutes);
+app.use('/api/companies', companyRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });

@@ -53,6 +53,8 @@ model Quote {
   updatedAt            DateTime    @updatedAt
   items                QuoteItem[]
   invoices             Invoice[]
+  approval             QuoteApproval?
+  followUps            FollowUp[]
 }
 
 model QuoteItem {
@@ -68,13 +70,14 @@ model QuoteItem {
 }
 
 model QuoteTemplate {
-  id          String   @id @default(uuid())
+  id          String              @id @default(uuid())
   name        String
   description String?
   projectType String?
   items       QuoteTemplateItem[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  recurring   RecurringQuote[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
 }
 
 model QuoteTemplateItem {
@@ -111,14 +114,17 @@ model Setting {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      UserRole @default(SALES)
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String        @id @default(uuid())
+  name          String
+  email         String        @unique
+  password      String
+  role          UserRole      @default(SALES)
+  active        Boolean       @default(true)
+  companyUsers  CompanyUser[]
+  auditLogs     AuditLog[]
+  approvals     ApprovalStep[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 enum UserRole {
@@ -218,4 +224,210 @@ model Attachment {
   entityId    String
   uploadedBy  String?
   createdAt   DateTime @default(now())
+}
+
+// Multi-company support
+model Company {
+  id            String   @id @default(uuid())
+  name          String
+  logo          String?
+  primaryColor  String   @default("#1E40AF")
+  secondaryColor String  @default("#3B82F6")
+  email         String?
+  phone         String?
+  address       String?
+  website       String?
+  currency      String   @default("KES")
+  taxId         String?
+  settings      CompanySettings?
+  users         CompanyUser[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model CompanySettings {
+  id              String  @id @default(uuid())
+  companyId       String  @unique
+  company         Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  defaultTaxRate  Decimal @db.Decimal(5, 2) @default(16)
+  defaultProfit   Decimal @db.Decimal(5, 2) @default(10)
+  quoteValidity   Int     @default(30)
+  invoiceDueDays  Int     @default(30)
+  slackWebhook    String?
+  teamsWebhook    String?
+  googleDriveFolder String?
+  approvalThreshold Decimal @db.Decimal(12, 2) @default(100000)
+}
+
+model CompanyUser {
+  id        String   @id @default(uuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  role      CompanyRole @default(MEMBER)
+  createdAt DateTime @default(now())
+}
+
+enum CompanyRole {
+  OWNER
+  ADMIN
+  MANAGER
+  MEMBER
+}
+
+// Audit logs
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  action      String
+  entityType  String
+  entityId    String
+  details     String?
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+}
+
+// Recurring quotes
+model RecurringQuote {
+  id              String           @id @default(uuid())
+  name            String
+  clientId        String
+  projectId       String
+  templateId      String?
+  frequency       RecurringFrequency
+  nextRunDate     DateTime
+  lastRunDate     DateTime?
+  items           QuoteTemplateItem[]
+  profitMargin    Decimal          @db.Decimal(5, 2) @default(10)
+  taxPercent      Decimal          @db.Decimal(5, 2) @default(16)
+  autoSend        Boolean          @default(false)
+  active          Boolean          @default(true)
+  createdBy       String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+enum RecurringFrequency {
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+// Approval workflows
+model ApprovalWorkflow {
+  id          String       @id @default(uuid())
+  name        String
+  threshold   Decimal      @db.Decimal(12, 2)
+  approvers   ApprovalStep[]
+  active      Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model ApprovalStep {
+  id              String          @id @default(uuid())
+  workflowId      String
+  workflow        ApprovalWorkflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  stepNumber      Int
+  approverId      String
+  approver        User            @relation("ApprovalApprover", fields: [approverId], references: [id])
+  status          ApprovalStatus  @default(PENDING)
+  comments        String?
+  createdAt       DateTime        @default(now())
+}
+
+model QuoteApproval {
+  id          String         @id @default(uuid())
+  quoteId     String         @unique
+  quote       Quote          @relation(fields: [quoteId], references: [id])
+  workflowId  String
+  workflow    ApprovalWorkflow @relation(fields: [workflowId], references: [id])
+  currentStep Int            @default(1)
+  status      ApprovalStatus @default(PENDING)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+// Marketplace
+model MarketplaceTemplate {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  category    String
+  projectType ProjectType?
+  price       Decimal   @db.Decimal(12, 2) @default(0)
+  rating      Decimal   @db.Decimal(3, 2) @default(0)
+  downloads   Int       @default(0)
+  items       MarketplaceItem[]
+  createdBy   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model MarketplaceItem {
+  id          String            @id @default(uuid())
+  templateId  String
+  template    MarketplaceTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  category    String
+  description String
+  quantity    Decimal           @db.Decimal(10, 2) @default(1)
+  unit        String
+  unitPrice   Decimal           @db.Decimal(12, 2)
+}
+
+model MarketplaceRate {
+  id          String   @id @default(uuid())
+  category    String
+  name        String
+  unit        String
+  avgPrice    Decimal  @db.Decimal(12, 2)
+  minPrice    Decimal  @db.Decimal(12, 2)
+  maxPrice    Decimal  @db.Decimal(12, 2)
+  region      String   @default("Kenya")
+  year        Int
+  source      String?
+  updatedAt   DateTime @default(now())
+}
+
+// Integration configs
+model Integration {
+  id          String            @id @default(uuid())
+  companyId   String
+  provider    IntegrationProvider
+  accessToken String?
+  refreshToken String?
+  settings    String?
+  active      Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+enum IntegrationProvider {
+  QUICKBOOKS
+  XERO
+  SLACK
+  TEAMS
+  GOOGLE_DRIVE
+}
+
+// Follow-up tracking
+model FollowUp {
+  id        String   @id @default(uuid())
+  quoteId   String
+  quote     Quote    @relation(fields: [quoteId], references: [id])
+  sentAt    DateTime @default(now())
+  type      String
+  email     String
+  subject   String
+  status    String   @default("SENT")
 }

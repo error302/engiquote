@@ -139,4 +139,76 @@ export const paymentsApi = {
     api.get(`/payments/${invoiceId}`)
 };
 
+export const integrationsApi = {
+  get: (companyId) => api.get(`/integrations/${companyId}`),
+  disconnect: (companyId, provider) => 
+    api.post(`/integrations/${companyId}/disconnect/${provider}`),
+  quickbooks: {
+    getAuthUrl: () => api.get('/integrations/quickbooks/auth'),
+    connect: (code, companyId) => 
+      api.post('/integrations/quickbooks/callback', { code, companyId }),
+    getCustomers: (companyId) => 
+      api.get(`/integrations/quickbooks/customers/${companyId}`),
+    getInvoices: (companyId) => 
+      api.get(`/integrations/quickbooks/invoices/${companyId}`),
+    syncInvoice: (companyId, invoiceId) => 
+      api.post('/integrations/quickbooks/sync-invoice', { companyId, invoiceId }),
+    syncPayment: (companyId, paymentId) => 
+      api.post('/integrations/quickbooks/sync-payment', { companyId, paymentId }),
+  }
+};
+
+export const marketplaceApi = {
+  templates: {
+    getAll: (filters) => api.get('/marketplace/templates', { params: filters }),
+    getById: (id) => api.get(`/marketplace/templates/${id}`),
+    create: (data) => api.post('/marketplace/templates', data),
+    download: (id, userId) => 
+      api.post(`/marketplace/templates/${id}/download`, { userId }),
+    rate: (id, rating) => 
+      api.post(`/marketplace/templates/${id}/rate`, { rating }),
+  },
+  rates: {
+    getAll: (filters) => api.get('/marketplace/rates', { params: filters }),
+    getCategories: () => api.get('/marketplace/rates/categories'),
+    create: (data) => api.post('/marketplace/rates', data),
+  }
+};
+
+export const recurringApi = {
+  getAll: () => api.get('/recurring'),
+  create: (data) => api.post('/recurring', data),
+  update: (id, data) => api.put(`/recurring/${id}`, data),
+  delete: (id) => api.delete(`/recurring/${id}`),
+  process: () => api.post('/recurring/process'),
+};
+
+export const approvalsApi = {
+  getAll: () => api.get('/approvals'),
+  create: (data) => api.post('/approvals', data),
+  getPending: (userId) => api.get(`/approvals/pending/${userId}`),
+  getByQuote: (quoteId) => api.get(`/approvals/quote/${quoteId}`),
+  approve: (quoteId, data) => 
+    api.post(`/approvals/quote/${quoteId}/approve`, data),
+  reject: (quoteId, data) => 
+    api.post(`/approvals/quote/${quoteId}/reject`, data),
+};
+
+export const auditApi = {
+  getAll: (filters) => api.get('/audit', { params: filters }),
+  getByEntity: (type, id) => api.get(`/audit/entity/${type}/${id}`),
+  getStats: (companyId, startDate, endDate) => 
+    api.get('/audit/stats', { params: { companyId, startDate, endDate } }),
+};
+
+export const companiesApi = {
+  getAll: () => api.get('/companies'),
+  getById: (id) => api.get(`/companies/${id}`),
+  create: (data) => api.post('/companies', data),
+  update: (id, data) => api.put(`/companies/${id}`, data),
+  updateSettings: (id, data) => api.put(`/companies/${id}/settings`, data),
+  addUser: (id, data) => api.post(`/companies/${id}/users`, data),
+  removeUser: (id, userId) => api.delete(`/companies/${id}/users/${userId}`),
+};
+
 export default api;
