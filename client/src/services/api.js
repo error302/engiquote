@@ -114,4 +114,20 @@ export const tasksApi = {
   delete: (id) => api.delete(`/tasks/${id}`)
 };
 
+export const attachmentsApi = {
+  upload: (file, entityType, entityId) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('entityType', entityType);
+    formData.append('entityId', entityId);
+    return api.post('/attachments/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  getByEntity: (entityType, entityId) => 
+    api.get('/attachments', { params: { entityType, entityId } }),
+  getById: (id) => api.get(`/attachments/${id}`),
+  delete: (id) => api.delete(`/attachments/${id}`)
+};
+
 export default api;

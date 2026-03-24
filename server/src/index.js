@@ -13,6 +13,7 @@ import emailRoutes from './routes/email.js';
 import templatesRoutes from './routes/templates.js';
 import invoicesRoutes from './routes/invoices.js';
 import tasksRoutes from './routes/tasks.js';
+import attachmentRoutes from './routes/attachments.js';
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use('/api/email', emailRoutes);
 app.use('/api/templates', templatesRoutes);
 app.use('/api/invoices', invoicesRoutes);
 app.use('/api/tasks', tasksRoutes);
+app.use('/api/attachments', attachmentRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
