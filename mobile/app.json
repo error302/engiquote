@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "EngiQuote KE",
+    "slug": "engiquote-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "engiquote",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#1E40AF"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.engiquote.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1E40AF"
+      },
+      "package": "com.engiquote.app"
+    },
+    "plugins": ["expo-router", "expo-secure-store"]
+  }
+}
