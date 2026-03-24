@@ -130,4 +130,13 @@ export const attachmentsApi = {
   delete: (id) => api.delete(`/attachments/${id}`)
 };
 
+export const paymentsApi = {
+  createStripeCheckout: (invoiceId) => 
+    api.post('/payments/stripe/create-checkout', { invoiceId }),
+  initiateMpesa: (invoiceId, phoneNumber) => 
+    api.post('/payments/mpesa/stkpush', { invoiceId, phoneNumber }),
+  getByInvoice: (invoiceId) => 
+    api.get(`/payments/${invoiceId}`)
+};
+
 export default api;
