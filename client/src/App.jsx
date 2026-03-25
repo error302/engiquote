@@ -15,6 +15,8 @@ import Reports from './pages/Reports';
 import Tasks from './pages/Tasks';
 import Login from './pages/Login';
 import Users from './pages/Users';
+import CashFlow from './pages/CashFlow';
+import SharedQuote from './pages/SharedQuote';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -66,6 +68,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/portal" element={<ClientPortal />} />
+      <Route path="/portal/shared/:token" element={<SharedQuote />} />
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
       
       <Route path="/" element={
@@ -77,6 +80,7 @@ const AppRoutes = () => {
         <Route path="reports" element={<Reports />} />
         <Route path="clients" element={<Clients />} />
         <Route path="projects" element={<Projects />} />
+        <Route path="projects/:projectId/cashflow" element={<CashFlow />} />
         <Route path="tasks" element={<Tasks />} />
         <Route path="quotes" element={<Quotes />} />
         <Route path="invoices" element={<Invoices />} />
