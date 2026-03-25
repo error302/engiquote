@@ -211,4 +211,20 @@ export const companiesApi = {
   removeUser: (id, userId) => api.delete(`/companies/${id}/users/${userId}`),
 };
 
+export const cashflowApi = {
+  generate: (projectId, curve) => api.post('/cashflow/generate', { projectId, curve }),
+  get: (projectId) => api.get(`/cashflow/${projectId}`),
+  updateCurve: (projectId, curve) => api.put(`/cashflow/${projectId}/curve`, { curve }),
+};
+
+export const portalApi = {
+  share: (projectId, clientName, clientEmail) => 
+    api.post('/portal/share', { projectId, clientName, clientEmail }),
+  getByToken: (token) => api.get(`/portal/token/${token}`),
+  approve: (token) => api.post(`/portal/token/${token}/approve`, {}),
+  requestRevision: (token, comments) => 
+    api.post(`/portal/token/${token}/revision`, { comments }),
+  getMyProjects: () => api.get('/portal/my-projects'),
+};
+
 export default api;

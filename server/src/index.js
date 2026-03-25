@@ -21,6 +21,8 @@ import recurringRoutes from './routes/recurring.js';
 import approvalRoutes from './routes/approvals.js';
 import auditRoutes from './routes/audit.js';
 import companyRoutes from './routes/companies.js';
+import cashflowRoutes from './routes/cashflow.js';
+import portalshareRoutes from './routes/portalshare.js';
 
 dotenv.config();
 
@@ -50,6 +52,8 @@ app.use('/api/recurring', recurringRoutes);
 app.use('/api/approvals', approvalRoutes);
 app.use('/api/audit', auditRoutes);
 app.use('/api/companies', companyRoutes);
+app.use('/api/cashflow', cashflowRoutes);
+app.use('/api/portal', portalshareRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });

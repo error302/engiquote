@@ -21,17 +21,29 @@ model Client {
 }
 
 model Project {
-  id          String    @id @default(uuid())
-  clientId    String
-  client      Client    @relation(fields: [clientId], references: [id])
-  name        String
-  type        ProjectType
-  status      ProjectStatus @default(PENDING)
-  description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  quotes      Quote[]
-  tasks      Task[]
+  id             String       @id @default(uuid())
+  clientId       String
+  client         Client       @relation(fields: [clientId], references: [id])
+  name           String
+  type           ProjectType
+  status         ProjectStatus @default(PENDING)
+  description    String?
+  location       String?      // County for rate lookup
+  discipline     String       @default("BUILDING") // BUILDING|CIVIL|MECHANICAL|ARCHITECTURE
+  startDate      DateTime?
+  endDate        DateTime?
+  cashFlowCurve  String       @default("S_CURVE")
+  cashFlow       Json?
+  dailyBurnKsh   Decimal?     @db.Decimal(12, 2)
+  peakDailyBurnKsh Decimal?   @db.Decimal(12, 2)
+  inputSource    String       @default("MANUAL") // MANUAL|DWG|IFC|PDF
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  quotes         Quote[]
+  tasks          Task[]
+  quoteShares    QuoteShare[]
+  variationOrders VariationOrder[]
+  actualExpenses  ActualExpense[]
 }
 
 model Quote {
@@ -98,6 +110,7 @@ model Material {
   unit        String
   unitPrice   Decimal  @db.Decimal(12, 2)
   description String?
+  county      String   @default("NAIROBI") // NAIROBI|MOMBASA|KISUMU|NAKURU|ELDORET
 }
 
 model LaborRate {
@@ -430,4 +443,69 @@ model FollowUp {
   email     String
   subject   String
   status    String   @default("SENT")
+}
+
+// Client Quote Portal
+model QuoteShare {
+  id          String       @id @default(uuid())
+  projectId   String
+  project     Project      @relation(fields: [projectId], references: [id])
+  token       String       @unique @default(uuid())
+  clientName  String?
+  clientEmail String?
+  status      QuoteStatus  @default(PENDING)
+  comments    String?
+  viewedAt    DateTime?
+  approvedAt  DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime     @default(now())
+}
+
+// Statutory Fees
+model StatutoryFee {
+  id          String  @id @default(uuid())
+  name        String
+  basis       String  // PERCENTAGE_OF_COST | FIXED | RANGE
+  rate        Decimal? // if percentage
+  fixedKsh    Decimal? // if fixed
+  minKsh      Decimal?
+  maxKsh      Decimal?
+  county      String  @default('ALL')
+  projectType String  @default('ALL')
+  isActive    Boolean @default(true)
+  notes       String?
+}
+
+// Variation Orders
+model VariationOrder {
+  id            String     @id @default(uuid())
+  projectId     String
+  project       Project    @relation(fields: [projectId], references: [id])
+  voNumber      Int
+  description   String
+  items         Json       // array of added/removed/changed items
+  netChangeKsh  Decimal    @db.Decimal(12, 2)
+  status        VOStatus   @default(DRAFT)
+  pdfUrl        String?
+  createdAt     DateTime   @default(now())
+}
+
+enum VOStatus {
+  DRAFT
+  ISSUED
+  CLIENT_APPROVED
+  CLIENT_REJECTED
+}
+
+// Actuals tracking
+model ActualExpense {
+  id          String   @id @default(uuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id])
+  boqItemId   String?
+  description String
+  amountKsh   Decimal  @db.Decimal(12, 2)
+  category    String
+  receiptUrl  String?
+  spentAt     DateTime @default(now())
 }
