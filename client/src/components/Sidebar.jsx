@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, FolderKanban, FileText, Package, Settings, UserCog, LogOut, FileStack, Receipt, BarChart3, CheckSquare } from 'lucide-react';
+import { LayoutDashboard, Users, FolderKanban, FileText, Package, Settings, UserCog, LogOut, FileStack, Receipt, BarChart3, CheckSquare, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const navItems = [
@@ -15,7 +15,7 @@ const navItems = [
   { to: '/settings', icon: Settings, label: 'Settings' }
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onClose }) {
   const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -26,6 +26,15 @@ export default function Sidebar() {
 
   return (
     <aside className="w-60 bg-primary text-white min-h-screen p-4 flex flex-col">
+      {/* Mobile close button */}
+      {onClose && (
+        <div className="flex justify-end mb-4 lg:hidden">
+          <button onClick={onClose} className="p-2 hover:bg-primary-light rounded">
+            <X size={24} />
+          </button>
+        </div>
+      )}
+      
       <div className="text-xl font-bold mb-8 px-2">EngiQuote KE</div>
       
       <nav className="space-y-1 flex-1">
