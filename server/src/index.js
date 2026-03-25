@@ -24,6 +24,7 @@ import companyRoutes from './routes/companies.js';
 import cashflowRoutes from './routes/cashflow.js';
 import portalshareRoutes from './routes/portalshare.js';
 import planUploadRoutes from './routes/planUpload.js';
+import googleDriveRoutes from './routes/googledrive.js';
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ app.use('/api/companies', companyRoutes);
 app.use('/api/cashflow', cashflowRoutes);
 app.use('/api/portal', portalshareRoutes);
 app.use('/api/plan-upload', planUploadRoutes);
+app.use('/api/drive', googleDriveRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
