@@ -17,6 +17,9 @@ import Login from './pages/Login';
 import Users from './pages/Users';
 import CashFlow from './pages/CashFlow';
 import SharedQuote from './pages/SharedQuote';
+import VariationOrders from './pages/VariationOrders';
+import ActualsTracker from './pages/ActualsTracker';
+import PlanExtractor from './pages/PlanExtractor';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -81,6 +84,9 @@ const AppRoutes = () => {
         <Route path="clients" element={<Clients />} />
         <Route path="projects" element={<Projects />} />
         <Route path="projects/:projectId/cashflow" element={<CashFlow />} />
+        <Route path="projects/:projectId/variations" element={<VariationOrders />} />
+        <Route path="projects/:projectId/actuals" element={<ActualsTracker />} />
+        <Route path="projects/:projectId/extract" element={<PlanExtractor />} />
         <Route path="tasks" element={<Tasks />} />
         <Route path="quotes" element={<Quotes />} />
         <Route path="invoices" element={<Invoices />} />

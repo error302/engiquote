@@ -227,4 +227,12 @@ export const portalApi = {
   getMyProjects: () => api.get('/portal/my-projects'),
 };
 
+export const planApi = {
+  extract: (projectId, inputType, dimensions) => 
+    api.post('/plan-upload/extract', { projectId, inputType, dimensions }),
+  get: (projectId) => api.get(`/plan-upload/${projectId}`),
+  confirm: (projectId, confirmed) => 
+    api.put(`/plan-upload/${projectId}/confirm`, { confirmed }),
+};
+
 export default api;
