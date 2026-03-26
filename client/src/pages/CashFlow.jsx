@@ -15,7 +15,7 @@ const CURVE_OPTIONS = [
 export default function CashFlowPage() {
   const { projectId } = useParams();
   const [loading, setLoading] = useState(false);
-  const [cashflow, setCashflow] = useState<any>(null);
+  const [cashflow, setCashflow] = useState(null);
   const [curve, setCurve] = useState('S_CURVE');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -36,7 +36,7 @@ export default function CashFlowPage() {
     }
   };
 
-  const updateCurve = async (newCurve: string) => {
+  const updateCurve = async (newCurve) => {
     setLoading(true);
     try {
       const res = await cashflowApi.updateCurve(projectId, newCurve);
@@ -189,7 +189,7 @@ export default function CashFlowPage() {
               </tr>
             </thead>
             <tbody>
-              {weeks.map((week: any) => (
+              {weeks.map((week) => (
                 <tr key={week.weekNumber} className="border-t">
                   <td className="px-3 py-2">Week {week.weekNumber}</td>
                   <td className="px-3 py-2">{week.phase}</td>

@@ -8,7 +8,7 @@ export default function SharedQuotePage() {
   const { token } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [share, setShare] = useState<any>(null);
+  const [share, setShare] = useState(null);
   const [error, setError] = useState('');
   const [revisionComment, setRevisionComment] = useState('');
   const [showRevisionForm, setShowRevisionForm] = useState(false);
@@ -19,9 +19,9 @@ export default function SharedQuotePage() {
 
   const loadQuote = async () => {
     try {
-      const res = await portalApi.getByToken(token!);
+      const res = await portalApi.getByToken(token);
       setShare(res.data);
-    } catch (err: any) {
+    } catch (err) {
       setError(err.response?.data?.error || 'Quote not found');
     } finally {
       setLoading(false);
@@ -30,8 +30,8 @@ export default function SharedQuotePage() {
 
   const handleApprove = async () => {
     try {
-      await portalApi.approve(token!);
-      setShare((prev: any) => ({ ...prev, status: 'APPROVED', approvedAt: new Date() }));
+      await portalApi.approve(token);
+      setShare((prev) => ({ ...prev, status: 'APPROVED', approvedAt: new Date() }));
     } catch (error) {
       alert('Failed to approve quote');
     }
@@ -43,8 +43,8 @@ export default function SharedQuotePage() {
       return;
     }
     try {
-      await portalApi.requestRevision(token!, revisionComment);
-      setShare((prev: any) => ({ ...prev, status: 'REVISION_REQUESTED', comments: revisionComment }));
+      await portalApi.requestRevision(token, revisionComment);
+      setShare((prev) => ({ ...prev, status: 'REVISION_REQUESTED', comments: revisionComment }));
       setShowRevisionForm(false);
     } catch (error) {
       alert('Failed to submit revision request');
@@ -119,7 +119,7 @@ export default function SharedQuotePage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {quote.items?.map((item: any, idx: number) => (
+                    {quote.items?.map((item, idx) => (
                       <tr key={idx} className="border-t">
                         <td className="px-3 py-2">{item.description}</td>
                         <td className="px-3 py-2 text-right">{item.quantity} {item.unit}</td>

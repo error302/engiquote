@@ -6,8 +6,8 @@ import { formatCurrency } from '../utils/helpers';
 
 export default function ActualsTracker() {
   const { projectId } = useParams();
-  const [actuals, setActuals] = useState<any[]>([]);
-  const [project, setProject] = useState<any>(null);
+  const [actuals, setActuals] = useState([]);
+  const [project, setProject] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ description: '', amountKsh: '', category: 'Materials' });
   const [loading, setLoading] = useState(false);
@@ -26,12 +26,12 @@ export default function ActualsTracker() {
     }
   };
 
-  const totalEstimated = project?.quotes?.reduce((sum: number, q: any) => sum + Number(q.total), 0) || 0;
-  const totalSpent = actuals.reduce((sum: number, a: any) => sum + Number(a.amountKsh), 0) || 0;
+  const totalEstimated = project?.quotes?.reduce((sum, q) => sum + Number(q.total), 0) || 0;
+  const totalSpent = actuals.reduce((sum, a) => sum + Number(a.amountKsh), 0) || 0;
   const percentage = totalEstimated > 0 ? (totalSpent / totalEstimated) * 100 : 0;
   const remaining = totalEstimated - totalSpent;
 
-  const byCategory = actuals.reduce((acc: any, a: any) => {
+  const byCategory = actuals.reduce((acc, a) => {
     acc[a.category] = (acc[a.category] || 0) + Number(a.amountKsh);
     return acc;
   }, {});

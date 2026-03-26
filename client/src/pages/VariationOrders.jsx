@@ -6,7 +6,7 @@ import { projectsApi } from '../services/api';
 export default function VariationOrders() {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  const [variations, setVariations] = useState<any[]>([]);
+  const [variations, setVariations] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ description: '', items: [] });
   const [loading, setLoading] = useState(false);
@@ -24,8 +24,8 @@ export default function VariationOrders() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
+  const getStatusColor = (status) => {
+    const colors = {
       DRAFT: 'bg-gray-100 text-gray-700',
       ISSUED: 'bg-blue-100 text-blue-700',
       CLIENT_APPROVED: 'bg-green-100 text-green-700',
