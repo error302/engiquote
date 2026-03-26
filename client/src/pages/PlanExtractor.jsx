@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Card, Button, TextInput, Select } from 'react-native-paper';
 import { useParams, useNavigate } from 'react-router-dom';
 import { projectsApi } from '../services/api';
 import api from '../services/api';
@@ -20,7 +19,7 @@ export default function PlanExtractor() {
     doors: '',
     windows: '',
   });
-  const [extracted, setExtracted] = useState<any>(null);
+  const [extracted, setExtracted] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const extractDimensions = async () => {
@@ -77,51 +76,51 @@ export default function PlanExtractor() {
 
       {step === 1 && (
         <>
-          <Card className="p-4 mb-4">
+          <div className="bg-white rounded-lg shadow p-4 mb-4">
             <h2 className="font-semibold mb-3">Input Type</h2>
             <div className="flex gap-2">
               {['MANUAL', 'PDF', 'DXF'].map((type) => (
-                <Button
+                <button
                   key={type}
-                  mode={inputType === type ? 'contained' : 'outlined'}
-                  onPress={() => setInputType(type)}
-                  compact
+                  className={`px-4 py-2 rounded ${inputType === type ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}
+                  onClick={() => setInputType(type)}
                 >
                   {type}
-                </Button>
+                </button>
               ))}
             </div>
-          </Card>
+          </div>
 
-          <Card className="p-4">
+          <div className="bg-white rounded-lg shadow p-4">
             {inputType === 'MANUAL' && (
               <>
-                <TextInput
-                  label="Floor Area (sqm)"
+                <input
+                  type="number"
+                  placeholder="Floor Area (sqm)"
                   value={form.floorArea}
-                  onChangeText={(v) => setForm({ ...form, floorArea: v })}
-                  keyboardType="numeric"
-                  className="mb-3"
+                  onChange={(e) => setForm({ ...form, floorArea: e.target.value })}
+                  className="w-full border rounded p-3 mb-3"
                 />
-                <TextInput
-                  label="Wall Perimeter (lm)"
+                <input
+                  type="number"
+                  placeholder="Wall Perimeter (lm)"
                   value={form.wallPerimeter}
-                  onChangeText={(v) => setForm({ ...form, wallPerimeter: v })}
-                  keyboardType="numeric"
-                  className="mb-3"
+                  onChange={(e) => setForm({ ...form, wallPerimeter: e.target.value })}
+                  className="w-full border rounded p-3 mb-3"
                 />
-                <TextInput
-                  label="Number of Openings (doors + windows)"
+                <input
+                  type="number"
+                  placeholder="Number of Openings (doors + windows)"
                   value={form.openings}
-                  onChangeText={(v) => setForm({ ...form, openings: v })}
-                  keyboardType="numeric"
-                  className="mb-3"
+                  onChange={(e) => setForm({ ...form, openings: e.target.value })}
+                  className="w-full border rounded p-3 mb-3"
                 />
-                <TextInput
-                  label="Number of Storeys"
+                <input
+                  type="number"
+                  placeholder="Number of Storeys"
                   value={form.storeys}
-                  onChangeText={(v) => setForm({ ...form, storeys: v })}
-                  keyboardType="numeric"
+                  onChange={(e) => setForm({ ...form, storeys: e.target.value })}
+                  className="w-full border rounded p-3"
                 />
               </>
             )}
@@ -129,44 +128,49 @@ export default function PlanExtractor() {
             {inputType === 'PDF' && (
               <>
                 <div className="grid grid-cols-3 gap-3 mb-3">
-                  <TextInput
-                    label="Length (m)"
+                  <input
+                    type="number"
+                    placeholder="Length (m)"
                     value={form.length}
-                    onChangeText={(v) => setForm({ ...form, length: v })}
-                    keyboardType="numeric"
+                    onChange={(e) => setForm({ ...form, length: e.target.value })}
+                    className="border rounded p-3"
                   />
-                  <TextInput
-                    label="Width (m)"
+                  <input
+                    type="number"
+                    placeholder="Width (m)"
                     value={form.width}
-                    onChangeText={(v) => setForm({ ...form, width: v })}
-                    keyboardType="numeric"
+                    onChange={(e) => setForm({ ...form, width: e.target.value })}
+                    className="border rounded p-3"
                   />
-                  <TextInput
-                    label="Height (m)"
+                  <input
+                    type="number"
+                    placeholder="Height (m)"
                     value={form.height}
-                    onChangeText={(v) => setForm({ ...form, height: v })}
-                    keyboardType="numeric"
+                    onChange={(e) => setForm({ ...form, height: e.target.value })}
+                    className="border rounded p-3"
                   />
                 </div>
-                <TextInput
-                  label="Number of Storeys"
+                <input
+                  type="number"
+                  placeholder="Number of Storeys"
                   value={form.storeys}
-                  onChangeText={(v) => setForm({ ...form, storeys: v })}
-                  keyboardType="numeric"
-                  className="mb-3"
+                  onChange={(e) => setForm({ ...form, storeys: e.target.value })}
+                  className="w-full border rounded p-3 mb-3"
                 />
                 <div className="grid grid-cols-2 gap-3">
-                  <TextInput
-                    label="Number of Doors"
+                  <input
+                    type="number"
+                    placeholder="Number of Doors"
                     value={form.doors}
-                    onChangeText={(v) => setForm({ ...form, doors: v })}
-                    keyboardType="numeric"
+                    onChange={(e) => setForm({ ...form, doors: e.target.value })}
+                    className="border rounded p-3"
                   />
-                  <TextInput
-                    label="Number of Windows"
+                  <input
+                    type="number"
+                    placeholder="Number of Windows"
                     value={form.windows}
-                    onChangeText={(v) => setForm({ ...form, windows: v })}
-                    keyboardType="numeric"
+                    onChange={(e) => setForm({ ...form, windows: e.target.value })}
+                    className="border rounded p-3"
                   />
                 </div>
               </>
@@ -175,25 +179,26 @@ export default function PlanExtractor() {
             {inputType === 'DXF' && (
               <div className="text-center py-8">
                 <p className="mb-4 text-gray-600">Upload your DXF/DWG file for automatic extraction</p>
-                <Button mode="contained">Upload File</Button>
+                <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                  Upload File
+                </button>
               </div>
             )}
 
-            <Button
-              mode="contained"
-              onPress={extractDimensions}
-              loading={loading}
-              className="mt-4"
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mt-4"
+              onClick={extractDimensions}
+              disabled={loading}
             >
-              Extract Dimensions
-            </Button>
-          </Card>
+              {loading ? 'Extracting...' : 'Extract Dimensions'}
+            </button>
+          </div>
         </>
       )}
 
       {step === 2 && extracted && (
         <>
-          <Card className="p-4 mb-4">
+          <div className="bg-white rounded-lg shadow p-4 mb-4">
             <h2 className="font-semibold mb-3">Extracted Dimensions</h2>
             <div className="space-y-2">
               <div className="flex justify-between">
@@ -225,15 +230,21 @@ export default function PlanExtractor() {
                 <p className="text-sm text-yellow-700">⚠️ {extracted.extracted.warnings[0]}</p>
               </div>
             )}
-          </Card>
+          </div>
 
           <div className="flex gap-3">
-            <Button mode="outlined" onPress={() => setStep(1)}>
+            <button 
+              className="border border-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-50"
+              onClick={() => setStep(1)}
+            >
               Back
-            </Button>
-            <Button mode="contained" onPress={confirmAndGenerate}>
+            </button>
+            <button 
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              onClick={confirmAndGenerate}
+            >
               Confirm & Continue
-            </Button>
+            </button>
           </div>
         </>
       )}

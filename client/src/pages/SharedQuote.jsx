@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Button, TextInput, Text } from 'react-native-paper';
 import { portalApi } from '../services/api';
 import { formatCurrency } from '../utils/helpers';
 
@@ -55,7 +54,7 @@ export default function SharedQuotePage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-500">Loading quote...</p>
         </div>
       </div>
@@ -65,11 +64,11 @@ export default function SharedQuotePage() {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Card className="p-8 max-w-md text-center">
+        <div className="bg-white rounded-lg shadow p-8 max-w-md text-center">
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
           <h2 className="text-xl font-bold mb-2">Quote Not Available</h2>
           <p className="text-gray-600">{error}</p>
-        </Card>
+        </div>
       </div>
     );
   }
@@ -85,11 +84,11 @@ export default function SharedQuotePage() {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-primary">EngiQuote KE</h1>
+          <h1 className="text-3xl font-bold text-blue-600">EngiQuote KE</h1>
           <p className="text-gray-500 mt-2">Professional Engineering Estimates</p>
         </div>
 
-        <Card className="p-6 mb-6">
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
           <div className="flex justify-between items-start mb-6">
             <div>
               <h2 className="text-xl font-bold">{project?.name}</h2>
@@ -156,18 +155,18 @@ export default function SharedQuotePage() {
             <p>Quote #: {quote?.quoteNumber}</p>
             <p>Valid until: {quote?.validUntil ? new Date(quote.validUntil).toLocaleDateString() : '30 days'}</p>
           </div>
-        </Card>
+        </div>
 
         {isApproved ? (
-          <Card className="p-6 text-center bg-green-50">
+          <div className="bg-white rounded-lg shadow p-6 text-center bg-green-50">
             <div className="text-5xl mb-4">✅</div>
             <h3 className="text-xl font-bold text-green-700">Estimate Approved</h3>
             <p className="text-green-600">
               Approved on {new Date(share.approvedAt).toLocaleDateString()}
             </p>
-          </Card>
+          </div>
         ) : isRevisionRequested ? (
-          <Card className="p-6 bg-orange-50">
+          <div className="bg-white rounded-lg shadow p-6 bg-orange-50">
             <div className="text-center mb-4">
               <div className="text-5xl mb-2">📝</div>
               <h3 className="text-xl font-bold text-orange-700">Revision Requested</h3>
@@ -179,56 +178,50 @@ export default function SharedQuotePage() {
                 <p className="text-gray-600">{share.comments}</p>
               </div>
             )}
-          </Card>
+          </div>
         ) : (
-          <Card className="p-6">
+          <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-4">Actions</h3>
             <div className="flex gap-4">
-              <Button 
-                mode="contained" 
-                onPress={handleApprove}
-                className="flex-1"
-                buttonColor="#10B981"
+              <button 
+                className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                onClick={handleApprove}
               >
                 Approve Estimate
-              </Button>
-              <Button 
-                mode="outlined" 
-                onPress={() => setShowRevisionForm(true)}
-                className="flex-1"
+              </button>
+              <button 
+                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-50"
+                onClick={() => setShowRevisionForm(true)}
               >
                 Request Revision
-              </Button>
+              </button>
             </div>
 
             {showRevisionForm && (
               <div className="mt-4 pt-4 border-t">
-                <TextInput
-                  label="What would you like to change?"
-                  multiline
-                  rows={3}
+                <textarea
+                  placeholder="What would you like to change?"
                   value={revisionComment}
-                  onChangeText={setRevisionComment}
-                  className="mb-3"
+                  onChange={(e) => setRevisionComment(e.target.value)}
+                  className="w-full border rounded p-3 mb-3 h-24"
                 />
                 <div className="flex gap-2">
-                  <Button 
-                    mode="contained" 
-                    onPress={handleRevision}
-                    className="flex-1"
+                  <button 
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex-1"
+                    onClick={handleRevision}
                   >
                     Submit Request
-                  </Button>
-                  <Button 
-                    mode="text" 
-                    onPress={() => setShowRevisionForm(false)}
+                  </button>
+                  <button 
+                    className="text-gray-600 px-4 py-2 rounded hover:bg-gray-50"
+                    onClick={() => setShowRevisionForm(false)}
                   >
                     Cancel
-                  </Button>
+                  </button>
                 </div>
               </div>
             )}
-          </Card>
+          </div>
         )}
 
         <p className="text-center text-gray-400 text-sm mt-8">

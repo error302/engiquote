@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Card, Button, Modal, TextInput, Table, Badge } from 'react-native-paper';
 import { useParams, useNavigate } from 'react-router-dom';
 import { projectsApi } from '../services/api';
+import { formatCurrency } from '../utils/helpers';
 
 export default function VariationOrders() {
   const { projectId } = useParams();
@@ -38,76 +38,90 @@ export default function VariationOrders() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Variation Orders</h1>
-        <Button mode="contained" onClick={() => setShowModal(true)}>
+        <button 
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          onClick={() => setShowModal(true)}
+        >
           New Variation
-        </Button>
+        </button>
       </div>
 
       {variations.length === 0 ? (
-        <Card className="p-8 text-center">
+        <div className="bg-white rounded-lg shadow p-8 text-center">
           <p className="text-gray-500 mb-4">No variation orders yet</p>
-          <Button mode="outlined" onClick={() => setShowModal(true)}>
+          <button 
+            className="border border-blue-600 text-blue-600 px-4 py-2 rounded hover:bg-blue-50"
+            onClick={() => setShowModal(true)}
+          >
             Create First Variation
-          </Button>
-        </Card>
+          </button>
+        </div>
       ) : (
-        <Card>
-          <Table>
-            <Table.Header>
-              <Table.Title>VO #</Table.Title>
-              <Table.Title>Description</Table.Title>
-              <Table.Title>Net Change</Table.Title>
-              <Table.Title>Status</Table.Title>
-              <Table.Title>Date</Table.Title>
-            </Table.Header>
-            <Table.Body>
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-semibold">VO #</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">Description</th>
+                <th className="px-4 py-3 text-right text-sm font-semibold">Net Change</th>
+                <th className="px-4 py-3 text-center text-sm font-semibold">Status</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">Date</th>
+              </tr>
+            </thead>
+            <tbody>
               {variations.map((vo, idx) => (
-                <Table.Row key={vo.id || idx}>
-                  <Table.Cell>VO-{String(vo.voNumber).padStart(3, '0')}</Table.Cell>
-                  <Table.Cell className="max-w-xs truncate">{vo.description}</Table.Cell>
-                  <Table.Cell className={Number(vo.netChangeKsh) >= 0 ? 'text-green-600' : 'text-red-600'}>
-                    KSh {Number(vo.netChangeKsh).toLocaleString()}
-                  </Table.Cell>
-                  <Table.Cell>
+                <tr key={vo.id || idx} className="border-t">
+                  <td className="px-4 py-3">VO-{String(vo.voNumber || idx + 1).padStart(3, '0')}</td>
+                  <td className="px-4 py-3 max-w-xs truncate">{vo.description}</td>
+                  <td className={`px-4 py-3 text-right ${Number(vo.netChangeKsh || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {formatCurrency(vo.netChangeKsh || 0)}
+                  </td>
+                  <td className="px-4 py-3 text-center">
                     <span className={`px-2 py-1 rounded text-xs ${getStatusColor(vo.status)}`}>
-                      {vo.status.replace('_', ' ')}
+                      {(vo.status || 'DRAFT').replace('_', ' ')}
                     </span>
-                  </Table.Cell>
-                  <Table.Cell>{new Date(vo.createdAt).toLocaleDateString()}</Table.Cell>
-                </Table.Row>
+                  </td>
+                  <td className="px-4 py-3">{new Date(vo.createdAt).toLocaleDateString()}</td>
+                </tr>
               ))}
-            </Table.Body>
-          </Table>
-        </Card>
+            </tbody>
+          </table>
+        </div>
       )}
 
-      <Modal visible={showModal} onDismiss={() => setShowModal(false)}>
-        <Card className="p-6 max-w-md mx-auto">
-          <h2 className="text-xl font-bold mb-4">New Variation Order</h2>
-          
-          <TextInput
-            label="Description of change"
-            value={form.description}
-            onChangeText={(text) => setForm({ ...form, description: text })}
-            multiline
-            rows={3}
-            className="mb-4"
-          />
-          
-          <p className="text-sm text-gray-500 mb-4">
-            Add items that are being added, removed, or changed from the original BOQ.
-          </p>
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold mb-4">New Variation Order</h2>
+            
+            <textarea
+              placeholder="Description of change"
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="w-full border rounded p-3 mb-4 h-24"
+            />
+            
+            <p className="text-sm text-gray-500 mb-4">
+              Add items that are being added, removed, or changed from the original BOQ.
+            </p>
 
-          <div className="flex gap-2">
-            <Button mode="contained" onPress={() => setShowModal(false)}>
-              Save Draft
-            </Button>
-            <Button mode="outlined" onPress={() => setShowModal(false)}>
-              Cancel
-            </Button>
+            <div className="flex gap-2">
+              <button 
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                onClick={() => setShowModal(false)}
+              >
+                Save Draft
+              </button>
+              <button 
+                className="border border-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-50"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
-        </Card>
-      </Modal>
+        </div>
+      )}
     </div>
   );
 }

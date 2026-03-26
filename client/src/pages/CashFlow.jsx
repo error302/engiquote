@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { Card, Button, Select, TextInput, DatePicker } from 'react-native-paper';
 import { cashflowApi } from '../services/api';
 import { formatCurrency } from '../utils/helpers';
 
@@ -70,7 +69,7 @@ export default function CashFlowPage() {
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">Cash Flow Projection</h1>
         
-        <Card className="p-6 mb-6">
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
           <h2 className="text-lg font-semibold mb-4">Generate Cash Flow</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -107,14 +106,14 @@ export default function CashFlowPage() {
             </select>
           </div>
 
-          <Button 
-            mode="contained" 
-            onPress={generateCashFlow}
-            loading={loading}
+          <button 
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            onClick={generateCashFlow}
+            disabled={loading}
           >
-            Generate Cash Flow
-          </Button>
-        </Card>
+            {loading ? 'Generating...' : 'Generate Cash Flow'}
+          </button>
+        </div>
       </div>
     );
   }
@@ -145,37 +144,37 @@ export default function CashFlowPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <Card className="p-4">
+        <div className="bg-white rounded-lg shadow p-4">
           <p className="text-sm text-gray-500">Avg Daily Burn</p>
-          <p className="text-xl font-bold">{formatCurrency(summary.averageDailyBurnKsh)}</p>
-        </Card>
-        <Card className="p-4">
+          <p className="text-xl font-bold">{formatCurrency(summary?.averageDailyBurnKsh || 0)}</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4">
           <p className="text-sm text-gray-500">Peak Daily Burn</p>
-          <p className="text-xl font-bold text-orange-500">{formatCurrency(summary.peakDailyBurnKsh)}</p>
-        </Card>
-        <Card className="p-4">
+          <p className="text-xl font-bold text-orange-500">{formatCurrency(summary?.peakDailyBurnKsh || 0)}</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4">
           <p className="text-sm text-gray-500">Peak Phase</p>
-          <p className="text-lg font-semibold">{summary.peakPhase}</p>
-        </Card>
-        <Card className="p-4">
+          <p className="text-lg font-semibold">{summary?.peakPhase || 'N/A'}</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4">
           <p className="text-sm text-gray-500">Peak Week</p>
-          <p className="text-lg font-semibold">Week {summary.peakWeekNumber}</p>
-        </Card>
+          <p className="text-lg font-semibold">Week {summary?.peakWeekNumber || 'N/A'}</p>
+        </div>
       </div>
 
-      <Card className="p-4 mb-6">
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
         <h2 className="text-lg font-semibold mb-4">S-Curve Chart</h2>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={weeks}>
+          <LineChart data={weeks || []}>
             <XAxis dataKey="weekNumber" />
             <YAxis tickFormatter={(v) => `KSh ${(v/1000000).toFixed(1)}M`} />
             <Tooltip formatter={(value) => formatCurrency(value)} />
             <Line type="monotone" dataKey="cumulativeKsh" stroke="#1E40AF" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
-      </Card>
+      </div>
 
-      <Card className="p-4">
+      <div className="bg-white rounded-lg shadow p-4">
         <h2 className="text-lg font-semibold mb-4">Weekly Breakdown</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -189,7 +188,7 @@ export default function CashFlowPage() {
               </tr>
             </thead>
             <tbody>
-              {weeks.map((week) => (
+              {(weeks || []).map((week) => (
                 <tr key={week.weekNumber} className="border-t">
                   <td className="px-3 py-2">Week {week.weekNumber}</td>
                   <td className="px-3 py-2">{week.phase}</td>
@@ -209,7 +208,7 @@ export default function CashFlowPage() {
             </tbody>
           </table>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
