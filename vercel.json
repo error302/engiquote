@@ -6,11 +6,8 @@
       "use": "@vercel/node"
     },
     {
-      "src": "client",
-      "use": "@vercel/static-build",
-      "config": {
-        "installCommand": "cd client && npm install --legacy-peer-deps"
-      }
+      "src": "client/dist",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -19,8 +16,11 @@
       "dest": "/api/index.js"
     },
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/client/dist/index.html"
     }
   ]
 }
