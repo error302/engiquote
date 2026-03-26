@@ -6,8 +6,12 @@
       "use": "@vercel/node"
     },
     {
-      "src": "client/dist",
-      "use": "@vercel/static"
+      "src": "client",
+      "use": "@vercel/static-build",
+      "config": {
+        "installCommand": "cd client && npm install && npm run build",
+        "outputDirectory": "client/dist"
+      }
     }
   ],
   "routes": [
