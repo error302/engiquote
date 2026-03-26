@@ -1,4 +1,4 @@
-export function formatCurrency(amount: number, currency = 'KES'): string {
+export function formatCurrency(amount, currency = 'KES') {
   if (amount === null || amount === undefined) return 'KSh 0';
   return new Intl.NumberFormat('en-KE', {
     style: 'currency',
@@ -8,18 +8,18 @@ export function formatCurrency(amount: number, currency = 'KES'): string {
   }).format(Number(amount));
 }
 
-export function formatDate(date: string | Date | null): string {
+export function formatDate(date) {
   if (!date) return '-';
   return new Date(date).toLocaleDateString('en-KE');
 }
 
-export function formatDateTime(date: string | Date | null): string {
+export function formatDateTime(date) {
   if (!date) return '-';
   return new Date(date).toLocaleString('en-KE');
 }
 
-export function getStatusColor(status: string): string {
-  const colors: Record<string, string> = {
+export function getStatusColor(status) {
+  const colors = {
     DRAFT: 'bg-gray-100 text-gray-700',
     SENT: 'bg-blue-100 text-blue-700',
     ACCEPTED: 'bg-green-100 text-green-700',
@@ -34,7 +34,7 @@ export function getStatusColor(status: string): string {
   return colors[status] || 'bg-gray-100 text-gray-700';
 }
 
-export function generateWhatsAppLink(phone: string, message: string): string {
+export function generateWhatsAppLink(phone, message) {
   const cleanPhone = phone.replace(/^0/, '254').replace(/\D/g, '');
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
 }
