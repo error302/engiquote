@@ -6,5 +6,5 @@
 - [x] 3. Fix helpers.js - remove TS annotations
 - [x] 4. Fix whatsapp.js - remove TS annotations
 - [x] 5. Test local build: cd client && npm run build (running successfully, no parse errors)
-- [ ] 6. Commit changes and push to trigger Vercel deploy
+- [x] 6. Commit changes and push to trigger Vercel deploy
 - [ ] 7. Verify successful Vercel build
