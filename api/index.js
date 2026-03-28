@@ -9,6 +9,14 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
+// Strip /api prefix
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    req.url = req.url.replace(/^\/api/, '') || '/';
+  }
+  next();
+});
+
 // Auth middleware
 const auth = async (req, res, next) => {
   try {
