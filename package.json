@@ -2,9 +2,9 @@
   "name": "engiquote",
   "version": "1.0.0",
   "scripts": {
-    "build": "cd client && npm run build"
+    "build": "cd client && npx vite build"
   },
-  "installCommand": "npm install && cd client && npm install",
+  "installCommand": "cd client && npm install",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
